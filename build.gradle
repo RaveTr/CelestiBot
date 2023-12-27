@@ -1,0 +1,79 @@
+plugins {
+    id("java")
+    id("application")
+    id("com.github.johnrengelman.shadow") version("${shadow_plugin_version}")
+}
+
+group = project_group
+version = project_version
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+application {
+    mainClass.set("${main_class}")
+}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
+    maven {
+        name = "Dv8tion Maven"
+        url = "https://m2.dv8tion.net/releases"
+    }
+
+    maven {
+        name = "FastUtil Maven"
+        url = "https://mvnrepository.com/artifact/it.unimi.dsi/fastutil"
+    }
+}
+
+dependencies {
+    // Dependencies (Base)
+    implementation("net.dv8tion:JDA:${JDA_version}")
+    implementation("io.github.cdimascio:dotenv-java:${dotenv_version}")
+
+    // Dependencies (Extras)
+    implementation("ch.qos.logback:logback-classic:${logback_version}")
+    implementation("net.sf.trove4j:core:${trove4j_version}")
+
+    implementation("it.unimi.dsi:fastutil:${fastutil_version}")
+
+    implementation("org.apache.commons:commons-lang3:${apachecommonslang3_version}")
+    implementation("org.apache.commons:commons-collections4:${apachecommonscollections4_version}")
+    implementation("org.apache.commons:commons-math3:${apachecommonsmath3_version}")
+    implementation("org.apache.logging.log4j:log4j-core:${apachelog4j_version}")
+    implementation("org.apache.logging.log4j:log4j-api:${apachelog4j_version}")
+
+    implementation("com.google.guava:guava:${googleguava_version}")
+    implementation("com.google.code.gson:gson:${googlegson_version}")
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": "${project_name}",
+                "Implementation-Version": "${project_version}",
+                "Implementation-Vendor": "${project_author}",
+                "Main-Class": "${main_class}",
+        )
+    }
+}
+
+shadowJar {
+    zip64(true)
+    mergeServiceFiles()
+}
+
+compileJava.options.encoding = "UTF-8"
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
